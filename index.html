@@ -2,7 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Novari CO">
+<meta name="application-name" content="Novari CO">
+<meta name="theme-color" content="#080d0b">
+<meta name="description" content="Control Operativo Novari — Gestión de proyectos, dominios y herramientas">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>Novari — Control Operativo</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -186,6 +195,80 @@ tbody td{padding:10px 14px;font-size:12px;color:var(--text2);vertical-align:midd
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--green);border-radius:var(--r2);padding:12px 16px;font-size:12px;color:var(--green);z-index:200;transform:translateY(80px);opacity:0;transition:all .3s;max-width:300px;}
 .toast.show{transform:translateY(0);opacity:1;}
+
+/* ── PWA INSTALL BANNER ──────────────────────── */
+.pwa-banner{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border2);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:300;transform:translateY(100%);transition:transform .3s;}
+.pwa-banner.show{transform:translateY(0);}
+.pwa-banner-text{font-size:12px;color:var(--text2);}
+.pwa-banner-text strong{color:var(--text);display:block;margin-bottom:2px;}
+.pwa-banner-actions{display:flex;gap:8px;flex-shrink:0;}
+
+/* ── MOBILE NAV ──────────────────────────────── */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:50;padding:8px 0 calc(8px + env(safe-area-inset-bottom));}
+.mobile-nav-items{display:flex;justify-content:space-around;}
+.mobile-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;cursor:pointer;color:var(--text3);font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border-radius:var(--r);transition:color .15s;}
+.mobile-nav-item.active,.mobile-nav-item:hover{color:var(--blue3);}
+.mobile-nav-dot{width:6px;height:6px;border-radius:50%;background:currentColor;margin-bottom:1px;}
+.mobile-hamburger{display:none;background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:8px;}
+.mobile-sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:80;}
+.mobile-sidebar-overlay.open{display:block;}
+
+/* ── RESPONSIVE ──────────────────────────────── */
+@media(max-width:768px){
+  /* Layout */
+  .shell{flex-direction:column;}
+  .sidebar{display:none;position:fixed;left:0;top:0;bottom:0;z-index:90;width:260px;transform:translateX(-100%);transition:transform .25s;}
+  .sidebar.mobile-open{display:flex;transform:translateX(0);}
+  .main{height:100vh;padding-bottom:60px;}
+  .topbar{padding:0 16px;}
+  .topbar-title{font-size:12px;}
+  .content{padding:16px;}
+
+  /* Mobile nav bar */
+  .mobile-nav{display:block;}
+  .mobile-hamburger{display:block;}
+
+  /* Stats */
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+  .stat-n{font-size:24px;}
+
+  /* Tables — horizontal scroll */
+  .table-wrap{overflow-x:auto;}
+  table{min-width:600px;}
+
+  /* Alert cards */
+  .alert-cards{grid-template-columns:1fr;}
+
+  /* Kanban — scroll horizontal */
+  .kanban-wrap{grid-template-columns:repeat(4,240px);overflow-x:auto;padding-bottom:8px;}
+
+  /* Login */
+  .login-box{width:calc(100vw - 40px);max-width:380px;padding:32px 24px;}
+
+  /* Modal */
+  .modal{max-width:100%;margin:0;border-radius:var(--r3) var(--r3) 0 0;max-height:92vh;position:fixed;bottom:0;left:0;right:0;}
+  .modal-overlay{align-items:flex-end;padding:0;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+
+  /* Summary boxes */
+  .summary-box{padding:14px;}
+  .summary-title{font-size:16px;}
+
+  /* Gantt */
+  .gantt-wrap{overflow-x:auto;}
+  .gantt-table{min-width:700px;}
+
+  /* View tabs */
+  .view-tabs{width:100%;}
+  .view-tab{flex:1;text-align:center;}
+
+  /* Toast */
+  .toast{left:16px;right:16px;bottom:76px;max-width:none;}
+
+  /* Add btn */
+  .btn-primary.fab{position:fixed;bottom:72px;right:16px;width:48px;height:48px;border-radius:50%;padding:0;justify-content:center;font-size:20px;box-shadow:0 4px 16px rgba(47,111,212,.4);z-index:40;}
+}
 </style>
 </head>
 <body>
@@ -257,13 +340,16 @@ tbody td{padding:10px 14px;font-size:12px;color:var(--text2);vertical-align:midd
 
   <div class="main">
     <div class="topbar">
-      <div>
-        <div class="topbar-eyebrow">Novari Digital</div>
-        <div class="topbar-title" id="pageTitle">Dashboard</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="mobile-hamburger" onclick="toggleMobileSidebar()">☰</button>
+        <div>
+          <div class="topbar-eyebrow">Novari Digital</div>
+          <div class="topbar-title" id="pageTitle">Dashboard</div>
+        </div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Nuevo</button>
-        <button class="btn btn-sm" onclick="loadAll()">↺ Actualizar</button>
+        <button class="btn btn-sm" onclick="loadAll()">↺</button>
       </div>
     </div>
     <div class="content">
@@ -379,6 +465,42 @@ tbody td{padding:10px 14px;font-size:12px;color:var(--text2);vertical-align:midd
   </div>
 </div>
 
+<!-- MOBILE SIDEBAR OVERLAY -->
+<div class="mobile-sidebar-overlay" id="mobileSidebarOverlay" onclick="toggleMobileSidebar()"></div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-items">
+    <div class="mobile-nav-item active" id="mnav-dashboard" onclick="mobileNav('dashboard',this)">
+      <div class="mobile-nav-dot"></div>Inicio
+    </div>
+    <div class="mobile-nav-item" id="mnav-proyectos" onclick="mobileNav('proyectos',this)">
+      <div class="mobile-nav-dot"></div>Proyectos
+    </div>
+    <div class="mobile-nav-item" id="mnav-tareas" onclick="mobileNav('tareas',this)">
+      <div class="mobile-nav-dot"></div>Tareas
+    </div>
+    <div class="mobile-nav-item" id="mnav-alertas" onclick="mobileNav('alertas',this)">
+      <div class="mobile-nav-dot"></div>Alertas
+    </div>
+    <div class="mobile-nav-item" onclick="toggleMobileSidebar()">
+      <div class="mobile-nav-dot"></div>Más
+    </div>
+  </div>
+</nav>
+
+<!-- PWA INSTALL BANNER -->
+<div class="pwa-banner" id="pwaBanner">
+  <div class="pwa-banner-text">
+    <strong>Instalar Novari CO</strong>
+    Agrega la app a tu pantalla de inicio
+  </div>
+  <div class="pwa-banner-actions">
+    <button class="btn btn-sm" onclick="dismissPWA()">Ahora no</button>
+    <button class="btn btn-primary btn-sm" onclick="installPWA()">Instalar</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -398,7 +520,15 @@ async function doLogin() {
   const err   = document.getElementById('loginErr');
   err.style.display='none'; btn.textContent='Ingresando...'; btn.disabled=true;
   try {
-    await pb.collection('_superusers').authWithPassword(email, pass);
+    const res = await fetch(`${PB_URL}/api/collections/_superusers/auth-with-password`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({identity:email, password:pass})
+    });
+    const data = await res.json();
+    if(!data.token) throw new Error('Credenciales incorrectas');
+    // Store token manually
+    pb.authStore.save(data.token, data.record);
     showApp();
   } catch(e) {
     err.textContent='Credenciales incorrectas. Intenta de nuevo.';
@@ -420,16 +550,26 @@ function showApp() {
 if(pb.authStore.isValid) showApp();
 
 // ── DATA ──────────────────────────────────────
+async function fetchAll(name, sort='-created') {
+  // Compatible with PocketBase v0.30 — uses fetch directly
+  const token = pb.authStore.token;
+  const url = `${PB_URL}/api/collections/${name}/records?page=1&perPage=500&sort=${sort}`;
+  const res = await fetch(url, { headers: token ? { 'Authorization': token } : {} });
+  if (!res.ok) throw new Error(`${name}: ${res.status}`);
+  const data = await res.json();
+  return data.items || [];
+}
+
 async function loadAll() {
   try {
     const [p,d,c,h,b,cr,t] = await Promise.all([
-      pb.collection('proyectos').getFullList({sort:'-created'}),
-      pb.collection('dominios').getFullList({sort:'-created'}),
-      pb.collection('correos').getFullList({sort:'-created'}),
-      pb.collection('herramientas').getFullList({sort:'-created'}),
-      pb.collection('basesdatos').getFullList({sort:'-created'}),
-      pb.collection('credenciales').getFullList({sort:'-created'}),
-      pb.collection('tareas').getFullList({sort:'inicio'}),
+      fetchAll('proyectos'),
+      fetchAll('dominios'),
+      fetchAll('correos'),
+      fetchAll('herramientas'),
+      fetchAll('basesdatos'),
+      fetchAll('credenciales'),
+      fetchAll('tareas','inicio'),
     ]);
     allData = {proyectos:p,dominios:d,correos:c,herramientas:h,basesdatos:b,credenciales:cr,tareas:t};
     renderAll();
@@ -438,7 +578,7 @@ async function loadAll() {
 async function loadTable(name) {
   try {
     const sort = name==='tareas'?'inicio':'-created';
-    allData[name] = await pb.collection(name).getFullList({sort});
+    allData[name] = await fetchAll(name, sort);
     renderTable(name);
     if(currentPanel==='dashboard') renderDash();
     updateAlertBadge();
@@ -747,8 +887,19 @@ async function saveModal(){
     else data[f]=el.value||'';
   });
   try{
-    if(modalRecordId)await pb.collection(modalTable).update(modalRecordId,data);
-    else await pb.collection(modalTable).create(data);
+    const token = pb.authStore.token;
+    const headers = { 'Content-Type':'application/json', ...(token?{'Authorization':token}:{}) };
+    let res;
+    if(modalRecordId){
+      res = await fetch(`${PB_URL}/api/collections/${modalTable}/records/${modalRecordId}`, {
+        method:'PATCH', headers, body:JSON.stringify(data)
+      });
+    } else {
+      res = await fetch(`${PB_URL}/api/collections/${modalTable}/records`, {
+        method:'POST', headers, body:JSON.stringify(data)
+      });
+    }
+    if(!res.ok){ const err=await res.json(); throw new Error(JSON.stringify(err)); }
     closeModal();
     await loadTable(modalTable);
     toast('Guardado correctamente ✓');
@@ -757,7 +908,11 @@ async function saveModal(){
 async function deleteRecord(){
   if(!confirm('¿Eliminar este registro? Esta acción no se puede deshacer.'))return;
   try{
-    await pb.collection(modalTable).delete(modalRecordId);
+    const token = pb.authStore.token;
+    const res = await fetch(`${PB_URL}/api/collections/${modalTable}/records/${modalRecordId}`, {
+      method:'DELETE', headers: token?{'Authorization':token}:{}
+    });
+    if(!res.ok && res.status!==204){ const err=await res.json(); throw new Error(JSON.stringify(err)); }
     closeModal();
     await loadTable(modalTable);
     toast('Registro eliminado');
@@ -771,6 +926,56 @@ function toast(msg,isErr=false){
   t.style.color=isErr?'var(--red)':'var(--green)';
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── MOBILE NAV ────────────────────────────────
+function mobileNav(panel, el) {
+  document.querySelectorAll('.mobile-nav-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  const fakeNavItem = document.querySelector(`.nav-item[onclick*="'${panel}'"]`);
+  showPanel(panel, fakeNavItem);
+}
+function toggleMobileSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('mobileSidebarOverlay');
+  sidebar.classList.toggle('mobile-open');
+  overlay.classList.toggle('open');
+}
+
+// ── PWA ───────────────────────────────────────
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(() => {
+    document.getElementById('pwaBanner').classList.add('show');
+  }, 3000);
+});
+
+async function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('pwaBanner').classList.remove('show');
+  if (outcome === 'accepted') toast('¡App instalada correctamente!');
+}
+
+function dismissPWA() {
+  document.getElementById('pwaBanner').classList.remove('show');
+  deferredPrompt = null;
+}
+
+window.addEventListener('appinstalled', () => {
+  toast('Novari CO instalada como app ✓');
+});
+
+// ── SERVICE WORKER ────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
 }
 </script>
 </body>
