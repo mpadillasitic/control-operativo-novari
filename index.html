@@ -520,14 +520,13 @@ async function doLogin() {
   const err   = document.getElementById('loginErr');
   err.style.display='none'; btn.textContent='Ingresando...'; btn.disabled=true;
   try {
-    const res = await fetch(`${PB_URL}/api/collections/_superusers/auth-with-password`, {
+    const res = await fetch(`${PB_URL}/api/collections/users/auth-with-password`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({identity:email, password:pass})
     });
     const data = await res.json();
     if(!data.token) throw new Error('Credenciales incorrectas');
-    // Store token manually
     pb.authStore.save(data.token, data.record);
     showApp();
   } catch(e) {
